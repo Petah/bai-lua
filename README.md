@@ -18,3 +18,8 @@ Windows Example Path/Console
  - `git init`
  - `git remote add origin git@github.com:Petah/bai-lua.git`
  - `git pull origin master`
+
+Tips
+ - Run Spring in window mode 
+ - Use `/luarules reload` to restart the AI while Spring is running (requires `/cheat`)
+ - Run `tail -f infolog.txt | grep bai` to view a filter Spring debug output
