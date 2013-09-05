@@ -12,6 +12,23 @@ end
 
 include("savetable.lua")
 
+local state = nil
+
+function detectState()
+    for i, teamID in ipairs(Spring.GetTeamList()) do
+        local teamID, leader, isDead, isAI, side = Spring.GetTeamInfo(t)
+        if Spring.GetTeamLuaAI(t) == gadget:GetInfo().name then
+            vardump(Spring.GetTeamResources(teamID, "metal"))
+            if (metalIncome < 4) then
+                state = "buildMetal"
+            else 
+                state = nil
+            end
+        end
+    end
+end
+
+
 function gadget:GamePreload() 
 end
 
@@ -35,16 +52,22 @@ end
 
 
 function gadget:Initialize()
-    Spring.Echo("BAI: Initialize " .. Spring.GetGameFrame())
+    vardump("BAI: Initialize " .. Spring.GetGameFrame())
+    detectState()
+    vardump(state)
     local units = Spring.GetAllUnits()
     for key, value in pairs(units) do
-        Spring.Echo(Spring.GetUnitDefID(units[key]))
+        vardump(units[key])
+        vardump(Spring.GetUnitDefID(units[key]))
+        vardump(UnitDefs[Spring.GetUnitDefID(units[key])]["builder"])
     end
+--[[
  for id,unitDef in pairs(UnitDefs) do
    for name,param in unitDef:pairs() do
      Spring.Echo(name,param)
    end
  end
+]]--
 end
 
 function gadget:Shutdown() 
@@ -182,47 +205,47 @@ function gadget:CobCallback()
     Spring.Echo("BAI: CobCallback")
 end
 
-function gadget:AllowCommand() 
-    Spring.Echo("BAI: AllowCommand")
-end
+-- function gadget:AllowCommand() 
+--     Spring.Echo("BAI: AllowCommand")
+-- end
 
 function gadget:CommandFallback() 
     Spring.Echo("BAI: CommandFallback")
 end
 
-function gadget:AllowUnitCreation() 
-    Spring.Echo("BAI: AllowUnitCreation")
-end
-
-function gadget:AllowUnitTransfer() 
-    Spring.Echo("BAI: AllowUnitTransfer")
-end
-
-function gadget:AllowUnitBuildStep() 
-    Spring.Echo("BAI: AllowUnitBuildStep")
-end
-
-function gadget:AllowFeatureCreation() 
-    Spring.Echo("BAI: AllowFeatureCreation")
-end
-
-function gadget:AllowFeatureBuildStep() 
-    Spring.Echo("BAI: AllowFeatureBuildStep")
-end
-
-function gadget:AllowResourceLevel() 
-    Spring.Echo("BAI: AllowResourceLevel")
-end
-
-function gadget:AllowResourceTransfer() 
-    Spring.Echo("BAI: AllowResourceTransfer")
-end
+-- function gadget:AllowUnitCreation() 
+--     Spring.Echo("BAI: AllowUnitCreation")
+-- end
+-- 
+-- function gadget:AllowUnitTransfer() 
+--     Spring.Echo("BAI: AllowUnitTransfer")
+-- end
+-- 
+-- function gadget:AllowUnitBuildStep() 
+--     Spring.Echo("BAI: AllowUnitBuildStep")
+-- end
+-- 
+-- function gadget:AllowFeatureCreation() 
+--     Spring.Echo("BAI: AllowFeatureCreation")
+-- end
+-- 
+-- function gadget:AllowFeatureBuildStep() 
+--     Spring.Echo("BAI: AllowFeatureBuildStep")
+-- end
+-- 
+-- function gadget:AllowResourceLevel() 
+--     Spring.Echo("BAI: AllowResourceLevel")
+-- end
+-- 
+-- function gadget:AllowResourceTransfer() 
+--     Spring.Echo("BAI: AllowResourceTransfer")
+-- end
 
 function gadget:MoveCtrlNotify() 
     Spring.Echo("BAI: MoveCtrlNotify")
 end
 
-function gadget:TerraformComplete() 
-    Spring.Echo("BAI: TerraformComplete")
-end
+-- function gadget:TerraformComplete() 
+--     Spring.Echo("BAI: TerraformComplete")
+-- end
 
