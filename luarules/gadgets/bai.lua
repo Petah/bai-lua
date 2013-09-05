@@ -28,9 +28,9 @@ function vardump(value, depth, key)
   if type(value) == 'table' then
     mTable = getmetatable(value)
     if mTable == nil then
-      print(spaces ..linePrefix.."(table) ")
+      Spring.Echo("BAI: "..spaces ..linePrefix.."(table) ")
     else
-      print(spaces .."(metatable) ")
+      Spring.Echo("BAI: "..spaces .."(metatable) ")
         value = mTable
     end		
     for tableKey, tableValue in pairs(value) do
@@ -41,9 +41,9 @@ function vardump(value, depth, key)
       type(value)	== 'userdata' or
       value		== nil
   then
-    print(spaces..tostring(value))
+    Spring.Echo("BAI: "..spaces..tostring(value))
   else
-    print(spaces..linePrefix.."("..type(value)..") "..tostring(value))
+    Spring.Echo("BAI: "..spaces..linePrefix.."("..type(value)..") "..tostring(value))
   end
 end
 
@@ -51,24 +51,36 @@ local state = nil
 
 function detectState()
     for i, teamID in ipairs(Spring.GetTeamList()) do
-        local teamID, leader, isDead, isAI, side = Spring.GetTeamInfo(t)
-        if Spring.GetTeamLuaAI(t) == gadget:GetInfo().name then
-            vardump(Spring.GetTeamResources(teamID, "metal"))
+        local teamID, leader, isDead, isAI, side = Spring.GetTeamInfo(teamID)
+        if Spring.GetTeamLuaAI(teamID) == gadget:GetInfo().name then
+            local metal, metalStorage, metalPull, metalIncome, metalExpense = Spring.GetTeamResources(teamID, "metal")
             if (metalIncome < 4) then
                 state = "buildMetal"
+                buildMetal(teamID)
             else 
                 state = nil
             end
+            vardump(state)
+            
         end
     end
 end
 
-
-function gadget:GamePreload() 
+function buildMetal(teamID) 
+    -- Find an idle constructor
+    for i, unitID in ipairs(Spring.GetTeamUnits(teamID)) do
+        vardump(Spring.GetUnitCommands(unitID))
+    end
 end
 
---[[
+function gadget:GamePreload() 
+    vardump("GamePreload")
+end
+
 function gadget:GameStart() 
+    vardump("GameStart")
+    detectState()
+--[[
     Spring.SendCommands({"cheat 1", "globallos"})
     Spring.SendMessage('Hello')
     -- Initialise AI for all teams that are set to use it
@@ -82,21 +94,19 @@ function gadget:GameStart()
     end
     Spring.Echo("BAI Initialising")
     System.debug()
-end
 ]]--
-
+end
 
 function gadget:Initialize()
-    vardump("BAI: Initialize " .. Spring.GetGameFrame())
+    vardump("Initialize " .. Spring.GetGameFrame())
     detectState()
-    vardump(state)
+--[[
     local units = Spring.GetAllUnits()
     for key, value in pairs(units) do
         vardump(units[key])
         vardump(Spring.GetUnitDefID(units[key]))
         vardump(UnitDefs[Spring.GetUnitDefID(units[key])]["builder"])
     end
---[[
  for id,unitDef in pairs(UnitDefs) do
    for name,param in unitDef:pairs() do
      Spring.Echo(name,param)
